@@ -349,7 +349,7 @@ function openModal(issue){
   document.getElementById('fs2').value=issue?issue.status:'watch';
   document.getElementById('fn').value=issue?(issue.notes||''):'';
   document.getElementById('fc').value=issue?(issue.checkin||''):'';
-  popProj(issue?(issue.project||')':'');
+  popProj(issue?(issue.project||''):'');
   document.querySelectorAll('.crad').forEach(r=>r.classList.remove('on'));
   const cv=issue?issue.category:'own';
   const lbl=document.getElementById('cr-'+cv);
