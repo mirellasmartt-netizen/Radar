@@ -7,770 +7,445 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --rdc-red: #D92228;
-    --rdc-red-dark: #B01B20;
-    --rdc-red-light: #FCEAEA;
-    --rdc-navy: #1A1A1A;
-
-    --bg: #F5F5F5;
-    --surface: #FFFFFF;
-    --surface2: #F0F0F0;
-    --border: #E2E2E2;
-    --border-dark: #CACACA;
-    --text: #1A1A1A;
-    --text-muted: #5C5C5C;
-    --text-faint: #9A9A9A;
-
-    --status-watch-bg: #FFF8E6;
-    --status-watch-text: #7A5C00;
-    --status-watch-dot: #E9A825;
-
-    --status-action-bg: var(--rdc-red-light);
-    --status-action-text: #8C1A1E;
-    --status-action-dot: var(--rdc-red);
-
-    --status-blocked-bg: #F0EDFF;
-    --status-blocked-text: #3D2C8F;
-    --status-blocked-dot: #6B53D6;
-
-    --cat-own: #1D9E75;
-    --cat-xfn: #2176C7;
-    --cat-design: var(--rdc-red);
-    --cat-people: #8B3FA8;
-
-    --font-display: 'Source Serif 4', Georgia, serif;
-    --font-sans: 'Source Sans 3', system-ui, sans-serif;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --rdc-red:#D92228;--rdc-red-dark:#B01B20;--rdc-red-light:#FCEAEA;--rdc-navy:#1A1A1A;
+  --bg:#F5F5F5;--surface:#FFFFFF;--surface2:#F0F0F0;--border:#E2E2E2;--border-dark:#CACACA;
+  --text:#1A1A1A;--text-muted:#5C5C5C;--text-faint:#9A9A9A;
+  --sw-bg:#FFF8E6;--sw-text:#7A5C00;--sw-dot:#E9A825;
+  --sa-bg:var(--rdc-red-light);--sa-text:#8C1A1E;--sa-dot:var(--rdc-red);
+  --sb-bg:#F0EDFF;--sb-text:#3D2C8F;--sb-dot:#6B53D6;
+  --co:#1D9E75;--cx:#2176C7;--cd:var(--rdc-red);--cp:#8B3FA8;
+  --fd:'Source Serif 4',Georgia,serif;--fs:'Source Sans 3',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#111;--surface:#1C1C1C;--surface2:#262626;--border:#303030;--border-dark:#444;
+    --text:#F2F2F2;--text-muted:#A0A0A0;--text-faint:#5A5A5A;
+    --rdc-red-light:#2A0708;--sw-bg:#2A2100;--sw-text:#F5C842;
+    --sa-bg:#2A0708;--sa-text:#F47578;--sb-bg:#110E2A;--sb-text:#A899F0;
   }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111111;
-      --surface: #1C1C1C;
-      --surface2: #262626;
-      --border: #303030;
-      --border-dark: #444444;
-      --text: #F2F2F2;
-      --text-muted: #A0A0A0;
-      --text-faint: #5A5A5A;
-
-      --rdc-red-light: #2A0708;
-      --status-watch-bg: #2A2100;
-      --status-watch-text: #F5C842;
-      --status-action-bg: #2A0708;
-      --status-action-text: #F47578;
-      --status-blocked-bg: #110E2A;
-      --status-blocked-text: #A899F0;
-    }
-  }
-
-  body {
-    font-family: var(--font-sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0 0 80px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .rdc-topbar {
-    background: var(--rdc-red);
-    height: 4px;
-    width: 100%;
-  }
-
-  header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 32px;
-    padding: 28px 32px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .header-left h1 {
-    font-family: var(--font-display);
-    font-size: 30px;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: -0.3px;
-    color: var(--text);
-    line-height: 1;
-    margin-bottom: 5px;
-  }
-
-  .header-left h1 span {
-    color: var(--rdc-red);
-    font-style: normal;
-    font-weight: 600;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  .header-left p {
-    font-size: 11px;
-    color: var(--text-faint);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .header-right {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .btn {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-    border: 1px solid var(--border-dark);
-    background: var(--surface);
-    color: var(--text);
-  }
-
-  .btn:hover { background: var(--surface2); }
-
-  .btn-primary {
-    background: var(--rdc-red);
-    color: #FFFFFF;
-    border-color: var(--rdc-red);
-  }
-
-  .btn-primary:hover { background: var(--rdc-red-dark); border-color: var(--rdc-red-dark); }
-
-  .filters {
-    display: flex;
-    gap: 6px;
-    margin: 0 32px 20px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    padding: 5px 13px;
-    border-radius: 20px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-muted);
-    transition: all 0.15s;
-  }
-
-  .filter-btn:hover { border-color: var(--border-dark); color: var(--text); }
-  .filter-btn.active { background: var(--rdc-navy); color: #FFFFFF; border-color: var(--rdc-navy); }
-
-  .dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-
-  .issues-list { display: flex; flex-direction: column; gap: 2px; padding: 0 32px; }
-
-  .issue-row {
-    display: grid;
-    grid-template-columns: 24px 1fr auto auto auto;
-    align-items: start;
-    gap: 12px;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    transition: border-color 0.15s;
-    cursor: pointer;
-  }
-
-  .issue-row:hover { border-color: var(--border-dark); }
-  .issue-row.expanded { border-color: var(--border-dark); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-
-  .cat-stripe {
-    width: 3px;
-    height: 100%;
-    border-radius: 2px;
-    min-height: 20px;
-    align-self: stretch;
-  }
-
-  .issue-main { min-width: 0; }
-
-  .issue-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-
-  .issue-meta {
-    font-size: 12px;
-    color: var(--text-faint);
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .status-badge {
-    font-size: 11px;
-    font-family: var(--font-sans);
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    padding: 3px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-    align-self: start;
-  }
-
-  .status-watch  { background: var(--status-watch-bg);   color: var(--status-watch-text); }
-  .status-action { background: var(--status-action-bg);  color: var(--status-action-text); }
-  .status-blocked{ background: var(--status-blocked-bg); color: var(--status-blocked-text); }
-
-  .chevron {
-    font-size: 14px;
-    color: var(--text-faint);
-    align-self: start;
-    transition: transform 0.2s;
-    padding-top: 2px;
-    font-style: normal;
-  }
-
-  .issue-row.expanded .chevron { transform: rotate(90deg); }
-
-  .issue-detail {
-    display: none;
-    padding: 12px 16px 14px 52px;
-    background: var(--surface);
-    border: 1px solid var(--border-dark);
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-  }
-
-  .issue-detail.open { display: block; }
-
-  .detail-note {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    border-left: 2px solid var(--rdc-red);
-    padding-left: 12px;
-    margin-bottom: 12px;
-  }
-
-  .detail-checkin {
-    font-size: 12px;
-    color: var(--text-faint);
-    margin-bottom: 8px;
-  }
-
-  .detail-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .detail-actions button {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .detail-actions button:hover { color: var(--text); border-color: var(--border-dark); }
-  .detail-actions button.danger:hover { color: var(--rdc-red); border-color: var(--rdc-red); }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 0;
-    color: var(--text-faint);
-    font-size: 14px;
-  }
-
-  .empty-state p:first-child {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 300;
-    font-style: italic;
-    margin-bottom: 8px;
-    color: var(--text-muted);
-  }
-
-  .summary-bar {
-    display: flex;
-    gap: 20px;
-    margin: 0 32px 24px;
-    padding: 12px 16px;
-    background: var(--surface2);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    align-items: center;
-  }
-
-  .summary-item { font-size: 12px; color: var(--text-muted); }
-  .summary-item strong { color: var(--text); font-weight: 600; }
-
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border-dark);
-    border-radius: 8px;
-    padding: 28px;
-    width: 520px;
-    max-width: 92vw;
-    max-height: 88vh;
-    overflow-y: auto;
-  }
-
-  .modal h2 {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-style: italic;
-    font-size: 22px;
-    margin-bottom: 20px;
-    color: var(--text);
-  }
-
-  .field { margin-bottom: 16px; }
-
-  .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .field input, .field textarea, .field select {
-    width: 100%;
-    font-family: var(--font-sans);
-    font-size: 14px;
-    padding: 9px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border-dark);
-    background: var(--surface2);
-    color: var(--text);
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .field input:focus, .field textarea:focus, .field select:focus {
-    border-color: var(--rdc-red);
-  }
-
-  .field select option { background: var(--surface); }
-
-  .cat-radios {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-
-  .cat-radio {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  .cat-radio input { display: none; }
-  .cat-radio:hover { border-color: var(--border-dark); color: var(--text); }
-  .cat-radio.selected { border-color: var(--rdc-red); background: var(--rdc-red-light); color: var(--text); }
-
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 24px;
-  }
-
-  .section-divider {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    margin: 20px 32px 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+}
+body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;max-width:900px;margin:0 auto;}
+.topbar{background:var(--rdc-red);height:4px;}
+header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;padding:28px 32px 20px;border-bottom:1px solid var(--border);}
+h1{font-family:var(--fd);font-size:30px;font-weight:300;font-style:italic;letter-spacing:-0.3px;line-height:1;margin-bottom:5px;}
+h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(--fs);font-size:13px;letter-spacing:0.06em;text-transform:uppercase;margin-right:10px;vertical-align:middle;}
+.date-sub{font-size:11px;color:var(--text-faint);letter-spacing:0.06em;text-transform:uppercase;}
+.hdr-right{display:flex;gap:8px;}
+.btn{font-family:var(--fs);font-size:12px;font-weight:500;padding:8px 16px;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid var(--border-dark);background:var(--surface);color:var(--text);}
+.btn:hover{background:var(--surface2);}
+.btn-p{background:var(--rdc-red);color:#fff;border-color:var(--rdc-red);}
+.btn-p:hover{background:var(--rdc-red-dark);border-color:var(--rdc-red-dark);}
+.filter-section{margin:0 32px 8px;}
+.flabel{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
+.frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.fb{font-family:var(--fs);font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all .15s;}
+.fb:hover{border-color:var(--border-dark);color:var(--text);}
+.fb.on{background:var(--rdc-navy);color:#fff;border-color:var(--rdc-navy);}
+.fb.proj.on{background:var(--rdc-red);border-color:var(--rdc-red);color:#fff;}
+.view-row{display:flex;gap:4px;margin:12px 32px 20px;align-items:center;}
+.view-row span{font-size:11px;color:var(--text-faint);margin-right:4px;}
+.vb{font-family:var(--fs);font-size:11px;font-weight:500;padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;}
+.vb.on{background:var(--surface);border-color:var(--border-dark);color:var(--text);}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.list{display:flex;flex-direction:column;gap:2px;padding:0 32px;}
+.pg-hdr{padding:10px 16px 8px;display:flex;align-items:baseline;gap:8px;}
+.pg-name{font-size:13px;font-weight:600;color:var(--text);}
+.pg-ct{font-size:11px;color:var(--text-faint);}
+.pg-items{display:flex;flex-direction:column;gap:2px;}
+.row{display:grid;grid-template-columns:24px 1fr auto auto;align-items:start;gap:12px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;transition:border-color .15s;cursor:pointer;}
+.row:hover{border-color:var(--border-dark);}
+.row.open{border-color:var(--border-dark);border-bottom-left-radius:0;border-bottom-right-radius:0;}
+.stripe{width:3px;border-radius:2px;min-height:20px;align-self:stretch;}
+.main{min-width:0;}
+.ititle{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:4px;}
+.imeta{font-size:12px;color:var(--text-faint);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.ptag{font-size:10px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:3px;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);white-space:nowrap;}
+.sb{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;align-self:start;}
+.s-watch{background:var(--sw-bg);color:var(--sw-text);}
+.s-action{background:var(--sa-bg);color:var(--sa-text);}
+.s-blocked{background:var(--sb-bg);color:var(--sb-text);}
+.chev{font-size:16px;color:var(--text-faint);align-self:start;transition:transform .2s;padding-top:1px;line-height:1;}
+.row.open .chev{transform:rotate(90deg);}
+.detail{display:none;padding:12px 16px 14px 52px;background:var(--surface);border:1px solid var(--border-dark);border-top:none;border-radius:0 0 6px 6px;}
+.detail.show{display:block;}
+.dnote{font-size:13px;color:var(--text-muted);line-height:1.6;border-left:2px solid var(--rdc-red);padding-left:12px;margin-bottom:10px;}
+.dcheckin{font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+.dacts{display:flex;gap:8px;margin-top:10px;}
+.dacts button{font-family:var(--fs);font-size:12px;font-weight:500;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer;transition:all .15s;}
+.dacts button:hover{color:var(--text);border-color:var(--border-dark);}
+.dacts button.del:hover{color:var(--rdc-red);border-color:var(--rdc-red);}
+.empty{text-align:center;padding:60px 0;color:var(--text-faint);font-size:14px;}
+.empty p:first-child{font-family:var(--fd);font-size:20px;font-weight:300;font-style:italic;margin-bottom:8px;color:var(--text-muted);}
+.sumbar{display:flex;gap:20px;margin:0 32px 20px;padding:12px 16px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);}
+.si{font-size:12px;color:var(--text-muted);}
+.si strong{color:var(--text);font-weight:600;}
+.sdiv{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin:20px 32px 8px;display:flex;align-items:center;gap:8px;}
+.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
+.overlay.show{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border-dark);border-radius:8px;padding:28px;width:540px;max-width:92vw;max-height:88vh;overflow-y:auto;}
+.modal h2{font-family:var(--fd);font-weight:300;font-style:italic;font-size:22px;margin-bottom:20px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.field input,.field textarea,.field select{width:100%;font-family:var(--fs);font-size:14px;padding:9px 12px;border-radius:4px;border:1px solid var(--border-dark);background:var(--surface2);color:var(--text);resize:vertical;outline:none;transition:border-color .15s;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--rdc-red);}
+.field select option{background:var(--surface);}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.crad{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:4px;border:1px solid var(--border);cursor:pointer;transition:all .15s;font-size:13px;color:var(--text-muted);}
+.crad input{display:none;}
+.crad:hover{border-color:var(--border-dark);color:var(--text);}
+.crad.on{border-color:var(--rdc-red);background:var(--rdc-red-light);color:var(--text);}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:24px;}
+.plist{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.pitem{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);font-size:13px;}
+.pdel{font-size:12px;color:var(--text-faint);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:3px;font-family:var(--fs);}
+.pdel:hover{color:var(--rdc-red);background:var(--rdc-red-light);}
+.addrow{display:flex;gap:8px;}
+.addrow input{flex:1;font-family:var(--fs);font-size:14px;padding:8px 12px;border-radius:4px;border:1px solid var(--border-dark);background:var(--surface2);color:var(--text);outline:none;}
+.addrow input:focus{border-color:var(--rdc-red);}
 </style>
 </head>
 <body>
-
-<div class="rdc-topbar"></div>
+<div class="topbar"></div>
 <header>
-  <div class="header-left">
+  <div>
     <h1><span>RDC</span>Radar</h1>
-    <p id="today-date"></p>
+    <p class="date-sub" id="dt"></p>
   </div>
-  <div class="header-right">
-    <button class="btn" onclick="exportLog()">Export</button>
-    <button class="btn btn-primary" onclick="openModal()">+ Add to radar</button>
+  <div class="hdr-right">
+    <button class="btn" onclick="openProjModal()">Projects</button>
+    <button class="btn" onclick="exportLog()">Export .txt</button>
+    <button class="btn" onclick="backupJSON()">Backup</button>
+    <button class="btn" onclick="document.getElementById('import-input').click()">Restore</button>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importJSON(event)">
+    <button class="btn btn-p" onclick="openModal()">+ Add to radar</button>
   </div>
 </header>
 
-<div class="summary-bar" id="summary-bar"></div>
+<div class="sumbar" id="sumbar"></div>
 
-<div class="filters" id="filters">
-  <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
-  <button class="filter-btn" data-filter="status-action" onclick="setFilter('status-action', this)"><span class="dot" style="background:var(--status-action-dot)"></span>Needs action</button>
-  <button class="filter-btn" data-filter="status-watch" onclick="setFilter('status-watch', this)"><span class="dot" style="background:var(--status-watch-dot)"></span>Watching</button>
-  <button class="filter-btn" data-filter="status-blocked" onclick="setFilter('status-blocked', this)"><span class="dot" style="background:var(--status-blocked-dot)"></span>Blocked</button>
-  <button class="filter-btn" data-filter="cat-own" onclick="setFilter('cat-own', this)">My tasks</button>
-  <button class="filter-btn" data-filter="cat-xfn" onclick="setFilter('cat-xfn', this)">X-fn</button>
-  <button class="filter-btn" data-filter="cat-design" onclick="setFilter('cat-design', this)">Design/product</button>
-  <button class="filter-btn" data-filter="cat-people" onclick="setFilter('cat-people', this)">People</button>
+<div class="filter-section">
+  <div class="flabel">Status</div>
+  <div class="frow" id="sf">
+    <button class="fb on" onclick="setSF('all',this)">All</button>
+    <button class="fb" onclick="setSF('s-action',this)"><span class="dot" style="background:var(--sa-dot)"></span>Needs action</button>
+    <button class="fb" onclick="setSF('s-watch',this)"><span class="dot" style="background:var(--sw-dot)"></span>Watching</button>
+    <button class="fb" onclick="setSF('s-blocked',this)"><span class="dot" style="background:var(--sb-dot)"></span>Blocked</button>
+    <button class="fb" onclick="setSF('c-own',this)">My tasks</button>
+    <button class="fb" onclick="setSF('c-xfn',this)">X-fn</button>
+    <button class="fb" onclick="setSF('c-design',this)">Design/product</button>
+    <button class="fb" onclick="setSF('c-people',this)">People</button>
+  </div>
+  <div class="flabel" style="margin-top:10px">Project</div>
+  <div class="frow" id="pf"></div>
 </div>
 
-<div class="issues-list" id="issues-list"></div>
+<div class="view-row">
+  <span>View:</span>
+  <button class="vb on" id="vs" onclick="setView('status')">By status</button>
+  <button class="vb" id="vp" onclick="setView('project')">By project</button>
+</div>
 
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+<div class="list" id="list"></div>
+
+<!-- Add/Edit modal -->
+<div class="overlay" id="mo" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <h2 id="modal-title">New issue</h2>
-    <input type="hidden" id="edit-id">
-
-    <div class="field">
-      <label>What is it?</label>
-      <input type="text" id="f-title" placeholder="One-line summary…">
-    </div>
-
+    <h2 id="mt">Add to radar</h2>
+    <input type="hidden" id="eid">
+    <div class="field"><label>What is it?</label><input type="text" id="ft" placeholder="One-line summary..."></div>
+    <div class="field"><label>Project</label><select id="fp"></select></div>
     <div class="field">
       <label>Category</label>
-      <div class="cat-radios">
-        <label class="cat-radio" id="cr-own">
-          <input type="radio" name="cat" value="own">
-          <span class="dot" style="background:var(--cat-own)"></span> My tasks & open loops
-        </label>
-        <label class="cat-radio" id="cr-xfn">
-          <input type="radio" name="cat" value="xfn">
-          <span class="dot" style="background:var(--cat-xfn)"></span> X-fn dependencies
-        </label>
-        <label class="cat-radio" id="cr-design">
-          <input type="radio" name="cat" value="design">
-          <span class="dot" style="background:var(--cat-design)"></span> Design / product decisions
-        </label>
-        <label class="cat-radio" id="cr-people">
-          <input type="radio" name="cat" value="people">
-          <span class="dot" style="background:var(--cat-people)"></span> Team / people things
-        </label>
+      <div class="cats">
+        <label class="crad on" id="cr-own"><input type="radio" name="cat" value="own" checked><span class="dot" style="background:var(--co)"></span>My tasks &amp; open loops</label>
+        <label class="crad" id="cr-xfn"><input type="radio" name="cat" value="xfn"><span class="dot" style="background:var(--cx)"></span>X-fn dependencies</label>
+        <label class="crad" id="cr-design"><input type="radio" name="cat" value="design"><span class="dot" style="background:var(--cd)"></span>Design / product decisions</label>
+        <label class="crad" id="cr-people"><input type="radio" name="cat" value="people"><span class="dot" style="background:var(--cp)"></span>Team / people things</label>
       </div>
     </div>
-
-    <div class="field">
-      <label>Status</label>
-      <select id="f-status">
-        <option value="watch">Watching</option>
-        <option value="action">Needs action</option>
-        <option value="blocked">Blocked on someone</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Notes (optional)</label>
-      <textarea id="f-notes" rows="3" placeholder="Context, background, who's involved…"></textarea>
-    </div>
-
-    <div class="field">
-      <label>Check-in date (optional)</label>
-      <input type="date" id="f-checkin">
-    </div>
-
-    <div class="modal-footer">
+    <div class="field"><label>Status</label><select id="fs2"><option value="watch">Watching</option><option value="action">Needs action</option><option value="blocked">Blocked on someone</option></select></div>
+    <div class="field"><label>Notes (optional)</label><textarea id="fn" rows="3" placeholder="Context, background, who's involved..."></textarea></div>
+    <div class="field"><label>Check-in date (optional)</label><input type="date" id="fc"></div>
+    <div class="mfoot">
       <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveIssue()">Save issue</button>
+      <button class="btn btn-p" onclick="saveIssue()">Save</button>
     </div>
+  </div>
+</div>
+
+<!-- Manage projects modal -->
+<div class="overlay" id="pm" onclick="if(event.target===this)closeProjModal()">
+  <div class="modal">
+    <h2>Manage projects</h2>
+    <div class="plist" id="pl"></div>
+    <div class="addrow">
+      <input type="text" id="np" placeholder="New project name..." onkeydown="if(event.key==='Enter')addProject()">
+      <button class="btn btn-p" onclick="addProject()">Add</button>
+    </div>
+    <div class="mfoot"><button class="btn btn-p" onclick="closeProjModal()">Done</button></div>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY = 'radar_v1';
-
-  const CAT_META = {
-    own:    { label: 'My tasks',      color: 'var(--cat-own)',    bg: '#E1F5EE', tc: '#085041' },
-    xfn:    { label: 'X-fn',          color: 'var(--cat-xfn)',    bg: '#E6F1FB', tc: '#0C3E78' },
-    design: { label: 'Design',        color: 'var(--cat-design)', bg: '#FCEAEA', tc: '#8C1A1E' },
-    people: { label: 'People',        color: 'var(--cat-people)', bg: '#F5E8FF', tc: '#5B1A8A' },
-  };
-
-  const STATUS_META = {
-    watch:   { label: 'Watching',         cls: 'status-watch',   dot: 'var(--status-watch-dot)' },
-    action:  { label: 'Needs action',     cls: 'status-action',  dot: 'var(--status-action-dot)' },
-    blocked: { label: 'Blocked on someone', cls: 'status-blocked', dot: 'var(--status-blocked-dot)' },
-  };
-
-  let issues = [];
-  let activeFilter = 'all';
-
-  function load() {
-    try { issues = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch(e) { issues = []; }
-  }
-
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(issues));
-  }
-
-  function setFilter(f, btn) {
-    activeFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  }
-
-  function matchesFilter(issue) {
-    if (activeFilter === 'all') return true;
-    if (activeFilter.startsWith('status-')) return issue.status === activeFilter.replace('status-','');
-    if (activeFilter.startsWith('cat-')) return issue.category === activeFilter.replace('cat-','');
-    return true;
-  }
-
-  function render() {
-    const visible = issues.filter(matchesFilter);
-
-    const counts = { watch: 0, action: 0, blocked: 0 };
-    issues.forEach(i => counts[i.status]++);
-    document.getElementById('summary-bar').innerHTML =
-      `<span class="summary-item"><strong>${issues.length}</strong> total</span>` +
-      `<span class="summary-item"><span class="dot" style="background:var(--status-action-dot)"></span><strong>${counts.action}</strong> need action</span>` +
-      `<span class="summary-item"><span class="dot" style="background:var(--status-watch-dot)"></span><strong>${counts.watch}</strong> watching</span>` +
-      `<span class="summary-item"><span class="dot" style="background:var(--status-blocked-dot)"></span><strong>${counts.blocked}</strong> blocked</span>`;
-
-    const list = document.getElementById('issues-list');
-
-    if (visible.length === 0) {
-      list.innerHTML = `<div class="empty-state"><p>Nothing here yet.</p><p>${activeFilter === 'all' ? 'Add your first issue above.' : 'No issues match this filter.'}</p></div>`;
-      return;
-    }
-
-    const sorted = [...visible].sort((a,b) => {
-      const order = { action: 0, blocked: 1, watch: 2 };
-      return order[a.status] - order[b.status];
-    });
-
-    const sections = [
-      { key: 'action',  label: 'Needs action' },
-      { key: 'blocked', label: 'Blocked on someone' },
-      { key: 'watch',   label: 'Watching' },
-    ];
-
-    let html = '';
-    sections.forEach(sec => {
-      const group = sorted.filter(i => i.status === sec.key);
-      if (!group.length) return;
-      html += `<div class="section-divider"><span class="dot" style="background:${STATUS_META[sec.key].dot}"></span>${sec.label}</div>`;
-      group.forEach(issue => { html += renderIssue(issue); });
-    });
-
-    list.innerHTML = html;
-  }
-
-  function renderIssue(issue) {
-    const cat = CAT_META[issue.category] || CAT_META.own;
-    const st = STATUS_META[issue.status];
-    const added = new Date(issue.created).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const checkin = issue.checkin ? `· check-in ${new Date(issue.checkin + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : '';
-    const catBgDark = issue.category === 'own' ? '#04342C' : issue.category === 'xfn' ? '#042C53' : issue.category === 'design' ? '#4A1B0C' : '#2A0040';
-
-    return `
-      <div class="issue-row" id="row-${issue.id}" onclick="toggleDetail('${issue.id}')">
-        <div class="cat-stripe" style="background:${cat.color}"></div>
-        <div class="issue-main">
-          <div class="issue-title">${escHtml(issue.title)}</div>
-          <div class="issue-meta">
-            <span style="padding:2px 7px; border-radius:3px; font-size:10px; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; background:${cat.bg}; color:${cat.tc};">${cat.label}</span>
-            <span>added ${added}${checkin}</span>
-          </div>
-        </div>
-        <span class="status-badge ${st.cls}">${st.label}</span>
-        <span class="chevron">›</span>
-      </div>
-      <div class="issue-detail" id="detail-${issue.id}">
-        ${issue.notes ? `<div class="detail-note">${escHtml(issue.notes)}</div>` : '<div class="detail-note" style="opacity:0.5">No notes added.</div>'}
-        ${issue.checkin ? `<div class="detail-checkin">Check-in: ${new Date(issue.checkin + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })}</div>` : ''}
-        <div class="detail-actions">
-          <button onclick="event.stopPropagation(); editIssue('${issue.id}')">Edit</button>
-          <button onclick="event.stopPropagation(); cycleStatus('${issue.id}')">Cycle status</button>
-          <button class="danger" onclick="event.stopPropagation(); deleteIssue('${issue.id}')">Delete</button>
-        </div>
-      </div>`;
-  }
-
-  function toggleDetail(id) {
-    const row = document.getElementById('row-' + id);
-    const detail = document.getElementById('detail-' + id);
-    const wasOpen = detail.classList.contains('open');
-    document.querySelectorAll('.issue-detail.open').forEach(d => d.classList.remove('open'));
-    document.querySelectorAll('.issue-row.expanded').forEach(r => r.classList.remove('expanded'));
-    if (!wasOpen) {
-      detail.classList.add('open');
-      row.classList.add('expanded');
-    }
-  }
-
-  function cycleStatus(id) {
-    const order = ['watch', 'action', 'blocked'];
-    const issue = issues.find(i => i.id === id);
-    if (!issue) return;
-    issue.status = order[(order.indexOf(issue.status) + 1) % order.length];
-    save();
-    render();
-  }
-
-  function deleteIssue(id) {
-    if (!confirm('Remove this issue?')) return;
-    issues = issues.filter(i => i.id !== id);
-    save();
-    render();
-  }
-
-  function openModal(issue) {
-    document.getElementById('modal-title').textContent = issue ? 'Edit item' : 'Add to radar';
-    document.getElementById('edit-id').value = issue ? issue.id : '';
-    document.getElementById('f-title').value = issue ? issue.title : '';
-    document.getElementById('f-status').value = issue ? issue.status : 'watch';
-    document.getElementById('f-notes').value = issue ? (issue.notes || '') : '';
-    document.getElementById('f-checkin').value = issue ? (issue.checkin || '') : '';
-
-    document.querySelectorAll('.cat-radio').forEach(r => r.classList.remove('selected'));
-    const catVal = issue ? issue.category : 'own';
-    const mapping = { own: 'cr-own', xfn: 'cr-xfn', design: 'cr-design', people: 'cr-people' };
-    const targetLabel = document.getElementById(mapping[catVal]);
-    if (targetLabel) {
-      targetLabel.classList.add('selected');
-      targetLabel.querySelector('input').checked = true;
-    }
-
-    document.querySelectorAll('.cat-radio').forEach(lbl => {
-      lbl.addEventListener('click', () => {
-        document.querySelectorAll('.cat-radio').forEach(r => r.classList.remove('selected'));
-        lbl.classList.add('selected');
-      });
-    });
-
-    document.getElementById('modal-overlay').classList.add('open');
-    setTimeout(() => document.getElementById('f-title').focus(), 50);
-  }
-
-  function editIssue(id) {
-    const issue = issues.find(i => i.id === id);
-    if (issue) openModal(issue);
-  }
-
-  function closeModal() {
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
-
-  function closeModalOnBg(e) {
-    if (e.target === document.getElementById('modal-overlay')) closeModal();
-  }
-
-  function saveIssue() {
-    const title = document.getElementById('f-title').value.trim();
-    if (!title) { document.getElementById('f-title').focus(); return; }
-
-    const catInput = document.querySelector('input[name="cat"]:checked');
-    const category = catInput ? catInput.value : 'own';
-    const status = document.getElementById('f-status').value;
-    const notes = document.getElementById('f-notes').value.trim();
-    const checkin = document.getElementById('f-checkin').value;
-    const editId = document.getElementById('edit-id').value;
-
-    if (editId) {
-      const issue = issues.find(i => i.id === editId);
-      if (issue) { issue.title = title; issue.category = category; issue.status = status; issue.notes = notes; issue.checkin = checkin; }
-    } else {
-      issues.unshift({ id: Date.now().toString(), title, category, status, notes, checkin, created: new Date().toISOString() });
-    }
-
-    save();
-    closeModal();
-    render();
-  }
-
-  function exportLog() {
-    const lines = ['RADAR — exported ' + new Date().toLocaleDateString(), ''];
-    const sections = [{ key:'action', label:'NEEDS ACTION' }, { key:'blocked', label:'BLOCKED' }, { key:'watch', label:'WATCHING' }];
-    sections.forEach(sec => {
-      const group = issues.filter(i => i.status === sec.key);
-      if (!group.length) return;
-      lines.push('── ' + sec.label + ' ──');
-      group.forEach(i => {
-        lines.push('• ' + i.title + ' [' + (CAT_META[i.category]?.label || i.category) + ']');
-        if (i.notes) lines.push('  ' + i.notes);
-        if (i.checkin) lines.push('  check-in: ' + i.checkin);
-      });
-      lines.push('');
-    });
-    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'radar.txt'; a.click();
-  }
-
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function setDate() {
-    const d = new Date();
-    document.getElementById('today-date').textContent = d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  }
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  load();
-  setDate();
+const SK='radar_v1', PK='radar_projects_v1';
+const DEFS=['RealPro Dashboard','RealPro App','Online Store & Billing'];
+const CM={
+  own:{label:'My tasks',color:'var(--co)',bg:'#E1F5EE',tc:'#085041'},
+  xfn:{label:'X-fn',color:'var(--cx)',bg:'#E6F1FB',tc:'#0C3E78'},
+  design:{label:'Design',color:'var(--cd)',bg:'#FCEAEA',tc:'#8C1A1E'},
+  people:{label:'People',color:'var(--cp)',bg:'#F5E8FF',tc:'#5B1A8A'},
+};
+const SM={
+  watch:{label:'Watching',cls:'s-watch',dot:'var(--sw-dot)'},
+  action:{label:'Needs action',cls:'s-action',dot:'var(--sa-dot)'},
+  blocked:{label:'Blocked on someone',cls:'s-blocked',dot:'var(--sb-dot)'},
+};
+let issues=[],custom=[],sf='all',pf='all',view='status';
+function allP(){return[...DEFS,...custom];}
+function load(){
+  try{issues=JSON.parse(localStorage.getItem(SK))||[];}catch(e){issues=[];}
+  try{custom=JSON.parse(localStorage.getItem(PK))||[];}catch(e){custom=[];}
+}
+function save(){
+  localStorage.setItem(SK,JSON.stringify(issues));
+  localStorage.setItem(PK,JSON.stringify(custom));
+}
+function h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function setSF(f,btn){
+  sf=f;
+  document.querySelectorAll('#sf .fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');render();
+}
+function setPF(f,btn){
+  pf=f;
+  document.querySelectorAll('#pf .fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');render();
+}
+function setView(v){
+  view=v;
+  document.getElementById('vs').classList.toggle('on',v==='status');
+  document.getElementById('vp').classList.toggle('on',v==='project');
   render();
+}
+function matches(i){
+  const sok=sf==='all'?true:sf.startsWith('s-')?i.status===sf.slice(2):i.category===sf.slice(2);
+  const pok=pf==='all'?true:(i.project||'No project')===pf;
+  return sok&&pok;
+}
+function renderPF(){
+  const c=document.getElementById('pf');
+  let html=`<button class="fb proj ${pf==='all'?'on':''}" onclick="setPF('all',this)">All projects</button>`;
+  allP().forEach(p=>{html+=`<button class="fb proj ${pf===p?'on':''}" onclick="setPF('${h(p)}',this)">${h(p)}</button>`;});
+  html+=`<button class="fb proj ${pf==='No project'?'on':''}" onclick="setPF('No project',this)">No project</button>`;
+  c.innerHTML=html;
+}
+function render(){
+  renderPF();
+  const vis=issues.filter(matches);
+  const co={watch:0,action:0,blocked:0};
+  issues.forEach(i=>co[i.status]++);
+  document.getElementById('sumbar').innerHTML=
+    `<span class="si"><strong>${issues.length}</strong> total</span>`+
+    `<span class="si"><span class="dot" style="background:var(--sa-dot)"></span><strong>${co.action}</strong> need action</span>`+
+    `<span class="si"><span class="dot" style="background:var(--sw-dot)"></span><strong>${co.watch}</strong> watching</span>`+
+    `<span class="si"><span class="dot" style="background:var(--sb-dot)"></span><strong>${co.blocked}</strong> blocked</span>`;
+  const list=document.getElementById('list');
+  if(!vis.length){list.innerHTML=`<div class="empty"><p>Nothing here yet.</p><p>${sf==='all'&&pf==='all'?'Add your first item above.':'No items match this filter.'}</p></div>`;return;}
+  if(view==='status')renderByStatus(vis,list);
+  else renderByProject(vis,list);
+}
+function srt(arr){return[...arr].sort((a,b)=>({action:0,blocked:1,watch:2}[a.status]-{action:0,blocked:1,watch:2}[b.status]));}
+function renderByStatus(vis,list){
+  let html='';
+  [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked on someone'},{key:'watch',label:'Watching'}].forEach(sec=>{
+    const g=srt(vis).filter(i=>i.status===sec.key);
+    if(!g.length)return;
+    html+=`<div class="sdiv"><span class="dot" style="background:${SM[sec.key].dot}"></span>${sec.label}</div>`;
+    g.forEach(i=>{html+=rowHTML(i,true);});
+  });
+  list.innerHTML=html;
+}
+function renderByProject(vis,list){
+  let html='';
+  [...allP(),'No project'].forEach(proj=>{
+    const g=srt(vis.filter(i=>(i.project||'No project')===proj));
+    if(!g.length)return;
+    html+=`<div><div class="pg-hdr"><span class="pg-name">${h(proj)}</span><span class="pg-ct">${g.length} item${g.length!==1?'s':''}</span></div><div class="pg-items">`;
+    g.forEach(i=>{html+=rowHTML(i,false);});
+    html+=`</div></div>`;
+  });
+  list.innerHTML=html||`<div class="empty"><p>Nothing here.</p></div>`;
+}
+function rowHTML(issue,showProj){
+  const cat=CM[issue.category]||CM.own;
+  const st=SM[issue.status];
+  const added=new Date(issue.created).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const chk=issue.checkin?` · check-in ${new Date(issue.checkin+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}` :'';
+  const ptag=showProj&&issue.project?`<span class="ptag">${h(issue.project)}</span>`:'';
+  return`<div class="row" id="r${issue.id}" onclick="tog('${issue.id}')">
+    <div class="stripe" style="background:${cat.color}"></div>
+    <div class="main">
+      <div class="ititle">${h(issue.title)}</div>
+      <div class="imeta">
+        <span style="padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;background:${cat.bg};color:${cat.tc};">${cat.label}</span>
+        ${ptag}<span>added ${added}${chk}</span>
+      </div>
+    </div>
+    <span class="sb ${st.cls}">${st.label}</span>
+    <span class="chev">&#x203A;</span>
+  </div>
+  <div class="detail" id="d${issue.id}">
+    ${issue.notes?`<div class="dnote">${h(issue.notes)}</div>`:'<div class="dnote" style="opacity:.5">No notes added.</div>'}
+    ${issue.checkin?`<div class="dcheckin">Check-in: ${new Date(issue.checkin+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>`:''}
+    <div class="dacts">
+      <button onclick="event.stopPropagation();editI('${issue.id}')">Edit</button>
+      <button onclick="event.stopPropagation();cycleS('${issue.id}')">Cycle status</button>
+      <button class="del" onclick="event.stopPropagation();delI('${issue.id}')">Delete</button>
+    </div>
+  </div>`;
+}
+function tog(id){
+  const row=document.getElementById('r'+id),det=document.getElementById('d'+id);
+  const was=det.classList.contains('show');
+  document.querySelectorAll('.detail.show').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.row.open').forEach(r=>r.classList.remove('open'));
+  if(!was){det.classList.add('show');row.classList.add('open');}
+}
+function cycleS(id){
+  const o=['watch','action','blocked'],i=issues.find(x=>x.id===id);
+  if(!i)return;i.status=o[(o.indexOf(i.status)+1)%o.length];save();render();
+}
+function delI(id){
+  if(!confirm('Remove this item from radar?'))return;
+  issues=issues.filter(i=>i.id!==id);save();render();
+}
+function popProj(sel){
+  document.getElementById('fp').innerHTML=
+    `<option value="">No project</option>`+allP().map(p=>`<option value="${h(p)}"${sel===p?' selected':''}>${h(p)}</option>`).join('');
+}
+function openModal(issue){
+  document.getElementById('mt').textContent=issue?'Edit item':'Add to radar';
+  document.getElementById('eid').value=issue?issue.id:'';
+  document.getElementById('ft').value=issue?issue.title:'';
+  document.getElementById('fs2').value=issue?issue.status:'watch';
+  document.getElementById('fn').value=issue?(issue.notes||''):'';
+  document.getElementById('fc').value=issue?(issue.checkin||''):'';
+  popProj(issue?(issue.project||')':'');
+  document.querySelectorAll('.crad').forEach(r=>r.classList.remove('on'));
+  const cv=issue?issue.category:'own';
+  const lbl=document.getElementById('cr-'+cv);
+  if(lbl){lbl.classList.add('on');lbl.querySelector('input').checked=true;}
+  document.querySelectorAll('.crad').forEach(lbl=>{
+    lbl.onclick=()=>{document.querySelectorAll('.crad').forEach(r=>r.classList.remove('on'));lbl.classList.add('on');};
+  });
+  document.getElementById('mo').classList.add('show');
+  setTimeout(()=>document.getElementById('ft').focus(),50);
+}
+function editI(id){const i=issues.find(x=>x.id===id);if(i)openModal(i);}
+function closeModal(){document.getElementById('mo').classList.remove('show');}
+function saveIssue(){
+  const title=document.getElementById('ft').value.trim();
+  if(!title){document.getElementById('ft').focus();return;}
+  const ci=document.querySelector('input[name="cat"]:checked');
+  const cat=ci?ci.value:'own';
+  const status=document.getElementById('fs2').value;
+  const notes=document.getElementById('fn').value.trim();
+  const checkin=document.getElementById('fc').value;
+  const project=document.getElementById('fp').value||'';
+  const eid=document.getElementById('eid').value;
+  if(eid){
+    const i=issues.find(x=>x.id===eid);
+    if(i){i.title=title;i.category=cat;i.status=status;i.notes=notes;i.checkin=checkin;i.project=project;}
+  } else {
+    issues.unshift({id:Date.now().toString(),title,category:cat,status,notes,checkin,project,created:new Date().toISOString()});
+  }
+  save();closeModal();render();
+}
+function openProjModal(){renderPL();document.getElementById('pm').classList.add('show');setTimeout(()=>document.getElementById('np').focus(),50);}
+function closeProjModal(){document.getElementById('pm').classList.remove('show');render();}
+function renderPL(){
+  const c=document.getElementById('pl');
+  let html=DEFS.map(p=>`<div class="pitem"><span>${h(p)}</span><span style="font-size:11px;color:var(--text-faint)">default</span></div>`).join('');
+  html+=custom.map((p,i)=>`<div class="pitem"><span>${h(p)}</span><button class="pdel" onclick="rmP(${i})">Remove</button></div>`).join('');
+  c.innerHTML=html||'<div style="color:var(--text-faint);font-size:13px;padding:8px 0">No custom projects yet.</div>';
+}
+function addProject(){
+  const input=document.getElementById('np');
+  const name=input.value.trim();
+  if(!name||allP().includes(name)){input.value='';return;}
+  custom.push(name);save();input.value='';renderPL();
+}
+function rmP(idx){
+  const rm=custom[idx];custom.splice(idx,1);
+  issues.forEach(i=>{if(i.project===rm)i.project='';});
+  save();renderPL();
+}
+function backupJSON(){
+  const backup={version:1,exported:new Date().toISOString(),issues,customProjects:custom};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='radar-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+function importJSON(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.issues||!Array.isArray(data.issues))throw new Error('Invalid backup file.');
+      const itemCount=data.issues.length;
+      const projCount=(data.customProjects||[]).length;
+      if(!confirm(`Restore ${itemCount} item${itemCount!==1?'s':''} and ${projCount} custom project${projCount!==1?'s':''}?\n\nThis will replace everything currently in your Radar. This cannot be undone.`)){
+        event.target.value='';return;
+      }
+      issues=data.issues;
+      custom=data.customProjects||[];
+      save();render();
+      event.target.value='';
+      showToast(`Restored ${itemCount} item${itemCount!==1?'s':''} successfully.`);
+    }catch(err){
+      alert('Could not read backup file. Make sure you are using a Radar backup (.json).');
+      event.target.value='';
+    }
+  };
+  reader.readAsText(file);
+}
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--rdc-navy);color:#fff;font-family:var(--fs);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;z-index:999;transition:opacity .3s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._to);t._to=setTimeout(()=>{t.style.opacity='0';},3000);
+}
+function exportLog(){
+  const lines=['RADAR — exported '+new Date().toLocaleDateString(),''];
+  [...allP(),'No project'].forEach(proj=>{
+    const g=issues.filter(i=>(i.project||'No project')===proj);
+    if(!g.length)return;
+    lines.push('=== '+proj.toUpperCase()+' ===');
+    [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'watch',label:'Watching'}].forEach(sec=>{
+      const sg=g.filter(i=>i.status===sec.key);
+      if(!sg.length)return;
+      lines.push('  '+sec.label+':');
+      sg.forEach(i=>{
+        lines.push('  - '+i.title+' ['+(CM[i.category]||{label:i.category}).label+']');
+        if(i.notes)lines.push('    '+i.notes);
+        if(i.checkin)lines.push('    check-in: '+i.checkin);
+      });
+    });
+    lines.push('');
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='radar.txt';a.click();
+}
+document.getElementById('dt').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeProjModal();}});
+load();render();
 </script>
 </body>
 </html>
