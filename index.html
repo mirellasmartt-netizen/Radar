@@ -14,7 +14,9 @@
   --text:#1A1A1A;--text-muted:#5C5C5C;--text-faint:#9A9A9A;
   --sw-bg:#FFF8E6;--sw-text:#7A5C00;--sw-dot:#E9A825;
   --sa-bg:var(--rdc-red-light);--sa-text:#8C1A1E;--sa-dot:var(--rdc-red);
-  --sb-bg:#F0EDFF;--sb-text:#3D2C8F;--sb-dot:#6B53D6;
+  --sr-bg:#FFF0E6;--sr-text:#7A3800;--sr-dot:#E97225;
+  --sp-bg:#EEF4FF;--sp-text:#2A4A8C;--sp-dot:#4A7AE0;
+  --sd-bg:#F0F0F0;--sd-text:#888;--sd-dot:#AAAAAA;
   --co:#1D9E75;--cx:#2176C7;--cd:var(--rdc-red);--cp:#8B3FA8;
   --fd:'Source Serif 4',Georgia,serif;--fs:'Source Sans 3',system-ui,sans-serif;
 }
@@ -24,6 +26,8 @@
     --text:#F2F2F2;--text-muted:#A0A0A0;--text-faint:#5A5A5A;
     --rdc-red-light:#2A0708;--sw-bg:#2A2100;--sw-text:#F5C842;
     --sa-bg:#2A0708;--sa-text:#F47578;--sb-bg:#110E2A;--sb-text:#A899F0;
+    --sr-bg:#2A1500;--sr-text:#FFAA6B;--sp-bg:#0E1A35;--sp-text:#7AA4F5;
+    --sd-bg:#222;--sd-text:#666;--sd-dot:#555;
   }
 }
 body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;max-width:900px;margin:0 auto;}
@@ -66,6 +70,12 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
 .s-watch{background:var(--sw-bg);color:var(--sw-text);}
 .s-action{background:var(--sa-bg);color:var(--sa-text);}
 .s-blocked{background:var(--sb-bg);color:var(--sb-text);}
+.s-reminder{background:var(--sr-bg);color:var(--sr-text);}
+.s-pending{background:var(--sp-bg);color:var(--sp-text);}
+.s-done{background:var(--sd-bg);color:var(--sd-text);}
+.row.is-done{opacity:.55;}
+.row.is-done .ititle{text-decoration:line-through;color:var(--text-muted);}
+.row.is-done .stripe{opacity:.4;}
 .chev{font-size:16px;color:var(--text-faint);align-self:start;transition:transform .2s;padding-top:1px;line-height:1;}
 .row.open .chev{transform:rotate(90deg);}
 .detail{display:none;padding:12px 16px 14px 52px;background:var(--surface);border:1px solid var(--border-dark);border-top:none;border-radius:0 0 6px 6px;}
@@ -149,6 +159,9 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
     <button class="fb" onclick="setSF('s-action',this)"><span class="dot" style="background:var(--sa-dot)"></span>Needs action</button>
     <button class="fb" onclick="setSF('s-watch',this)"><span class="dot" style="background:var(--sw-dot)"></span>Watching</button>
     <button class="fb" onclick="setSF('s-blocked',this)"><span class="dot" style="background:var(--sb-dot)"></span>Blocked</button>
+    <button class="fb" onclick="setSF('s-reminder',this)"><span class="dot" style="background:var(--sr-dot)"></span>Reminder</button>
+    <button class="fb" onclick="setSF('s-pending',this)"><span class="dot" style="background:var(--sp-dot)"></span>Pending decision</button>
+    <button class="fb" onclick="setSF('s-done',this)"><span class="dot" style="background:var(--sd-dot)"></span>Done</button>
     <button class="fb" onclick="setSF('c-own',this)">My tasks</button>
     <button class="fb" onclick="setSF('c-xfn',this)">X-fn</button>
     <button class="fb" onclick="setSF('c-design',this)">Design/product</button>
@@ -182,7 +195,7 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
         <label class="crad" id="cr-people"><input type="radio" name="cat" value="people"><span class="dot" style="background:var(--cp)"></span>Team / people things</label>
       </div>
     </div>
-    <div class="field"><label>Status</label><select id="fs2"><option value="watch">Watching</option><option value="action">Needs action</option><option value="blocked">Blocked on someone</option></select></div>
+    <div class="field"><label>Status</label><select id="fs2"><option value="watch">Watching</option><option value="action">Needs action</option><option value="blocked">Blocked on someone</option><option value="reminder">Reminder</option><option value="pending">Pending decision</option><option value="done">Done / Resolved</option></select></div>
     <div class="field"><label>Notes (optional)</label><textarea id="fn" rows="3" placeholder="Context, background, who's involved..."></textarea></div>
     <div class="field"><label>Check-in date (optional)</label><input type="date" id="fc"></div>
     <div class="mfoot">
@@ -218,6 +231,9 @@ const SM={
   watch:{label:'Watching',cls:'s-watch',dot:'var(--sw-dot)'},
   action:{label:'Needs action',cls:'s-action',dot:'var(--sa-dot)'},
   blocked:{label:'Blocked on someone',cls:'s-blocked',dot:'var(--sb-dot)'},
+  reminder:{label:'Reminder',cls:'s-reminder',dot:'var(--sr-dot)'},
+  pending:{label:'Pending decision',cls:'s-pending',dot:'var(--sp-dot)'},
+  done:{label:'Done / Resolved',cls:'s-done',dot:'var(--sd-dot)'},
 };
 let issues=[],custom=[],sf='all',pf='all',view='status';
 function allP(){return[...DEFS,...custom];}
@@ -261,22 +277,23 @@ function renderPF(){
 function render(){
   renderPF();
   const vis=issues.filter(matches);
-  const co={watch:0,action:0,blocked:0};
-  issues.forEach(i=>co[i.status]++);
+  const co={watch:0,action:0,blocked:0,reminder:0,pending:0,done:0};
+  issues.forEach(i=>{ if(co[i.status]!==undefined) co[i.status]++; });
   document.getElementById('sumbar').innerHTML=
     `<span class="si"><strong>${issues.length}</strong> total</span>`+
     `<span class="si"><span class="dot" style="background:var(--sa-dot)"></span><strong>${co.action}</strong> need action</span>`+
-    `<span class="si"><span class="dot" style="background:var(--sw-dot)"></span><strong>${co.watch}</strong> watching</span>`+
-    `<span class="si"><span class="dot" style="background:var(--sb-dot)"></span><strong>${co.blocked}</strong> blocked</span>`;
+    `<span class="si"><span class="dot" style="background:var(--sb-dot)"></span><strong>${co.blocked}</strong> blocked</span>`+
+    `<span class="si"><span class="dot" style="background:var(--sr-dot)"></span><strong>${co.reminder}</strong> reminders</span>`+
+    `<span class="si"><span class="dot" style="background:var(--sd-dot)"></span><strong>${co.done}</strong> done</span>`;
   const list=document.getElementById('list');
   if(!vis.length){list.innerHTML=`<div class="empty"><p>Nothing here yet.</p><p>${sf==='all'&&pf==='all'?'Add your first item above.':'No items match this filter.'}</p></div>`;return;}
   if(view==='status')renderByStatus(vis,list);
   else renderByProject(vis,list);
 }
-function srt(arr){return[...arr].sort((a,b)=>({action:0,blocked:1,watch:2}[a.status]-{action:0,blocked:1,watch:2}[b.status]));}
+function srt(arr){return[...arr].sort((a,b)=>({action:0,blocked:1,reminder:2,pending:3,watch:4,done:5}[a.status]-{action:0,blocked:1,reminder:2,pending:3,watch:4,done:5}[b.status]));}
 function renderByStatus(vis,list){
   let html='';
-  [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked on someone'},{key:'watch',label:'Watching'}].forEach(sec=>{
+  [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked on someone'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
     const g=srt(vis).filter(i=>i.status===sec.key);
     if(!g.length)return;
     html+=`<div class="sdiv"><span class="dot" style="background:${SM[sec.key].dot}"></span>${sec.label}</div>`;
@@ -301,7 +318,7 @@ function rowHTML(issue,showProj){
   const added=new Date(issue.created).toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const chk=issue.checkin?` · check-in ${new Date(issue.checkin+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}` :'';
   const ptag=showProj&&issue.project?`<span class="ptag">${h(issue.project)}</span>`:'';
-  return`<div class="row" id="r${issue.id}" onclick="tog('${issue.id}')">
+  return`<div class="row${issue.status==='done'?' is-done':''}" id="r${issue.id}" onclick="tog('${issue.id}')">
     <div class="stripe" style="background:${cat.color}"></div>
     <div class="main">
       <div class="ititle">${h(issue.title)}</div>
@@ -331,7 +348,7 @@ function tog(id){
   if(!was){det.classList.add('show');row.classList.add('open');}
 }
 function cycleS(id){
-  const o=['watch','action','blocked'],i=issues.find(x=>x.id===id);
+  const o=['watch','action','blocked','reminder','pending','done'],i=issues.find(x=>x.id===id);
   if(!i)return;i.status=o[(o.indexOf(i.status)+1)%o.length];save();render();
 }
 function delI(id){
@@ -465,7 +482,7 @@ function exportLog(){
     const g=issues.filter(i=>(i.project||'No project')===proj);
     if(!g.length)return;
     lines.push('=== '+proj.toUpperCase()+' ===');
-    [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'watch',label:'Watching'}].forEach(sec=>{
+    [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
       const sg=g.filter(i=>i.status===sec.key);
       if(!sg.length)return;
       lines.push('  '+sec.label+':');
