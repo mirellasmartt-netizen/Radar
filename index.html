@@ -105,6 +105,14 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
 .addrow{display:flex;gap:8px;}
 .addrow input{flex:1;font-family:var(--fs);font-size:14px;padding:8px 12px;border-radius:4px;border:1px solid var(--border-dark);background:var(--surface2);color:var(--text);outline:none;}
 .addrow input:focus{border-color:var(--rdc-red);}
+.backup-banner{display:none;margin:0 32px 16px;padding:10px 16px;background:var(--sw-bg);border:1px solid #E9C84A;border-radius:6px;font-size:13px;color:var(--sw-text);align-items:center;justify-content:space-between;gap:12px;}
+.backup-banner.show{display:flex;}
+.backup-banner strong{font-weight:600;}
+.bba{display:flex;gap:8px;flex-shrink:0;}
+.bb-now{font-family:var(--fs);font-size:12px;font-weight:500;padding:5px 12px;border-radius:4px;cursor:pointer;background:var(--sw-text);color:#fff;border:1px solid var(--sw-text);transition:all .15s;}
+.bb-now:hover{opacity:.85;}
+.bb-dim{font-family:var(--fs);font-size:12px;font-weight:500;padding:5px 12px;border-radius:4px;cursor:pointer;background:transparent;border:1px solid var(--sw-text);color:var(--sw-text);transition:all .15s;}
+.bb-dim:hover{background:rgba(0,0,0,.06);}
 </style>
 </head>
 <body>
@@ -123,6 +131,14 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
     <button class="btn btn-p" onclick="openModal()">+ Add to radar</button>
   </div>
 </header>
+
+<div class="backup-banner" id="backup-banner">
+  <span id="backup-banner-msg">Your last backup was over 7 days ago.</span>
+  <div class="bba">
+    <button class="bb-now" onclick="backupNow()">Back up now</button>
+    <button class="bb-dim" onclick="dismissBanner()">Dismiss</button>
+  </div>
+</div>
 
 <div class="sumbar" id="sumbar"></div>
 
@@ -383,6 +399,8 @@ function rmP(idx){
   issues.forEach(i=>{if(i.project===rm)i.project='';});
   save();renderPL();
 }
+const BK_KEY='radar_last_backup';
+const REMINDER_DAYS=7;
 function backupJSON(){
   const backup={version:1,exported:new Date().toISOString(),issues,customProjects:custom};
   const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
@@ -390,6 +408,24 @@ function backupJSON(){
   a.href=URL.createObjectURL(blob);
   a.download='radar-backup-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
+  localStorage.setItem(BK_KEY,new Date().toISOString());
+  dismissBanner();
+  showToast('Backup saved.');
+}
+function backupNow(){backupJSON();}
+function dismissBanner(){document.getElementById('backup-banner').classList.remove('show');}
+function checkBackupReminder(){
+  if(!issues.length)return;
+  const last=localStorage.getItem(BK_KEY);
+  if(!last){
+    document.getElementById('backup-banner-msg').textContent="You haven't backed up yet — your data only lives in this browser.";
+    document.getElementById('backup-banner').classList.add('show');return;
+  }
+  const days=Math.floor((Date.now()-new Date(last).getTime())/(1000*60*60*24));
+  if(days>=REMINDER_DAYS){
+    document.getElementById('backup-banner-msg').textContent=`Your last backup was ${days} day${days!==1?'s':''} ago.`;
+    document.getElementById('backup-banner').classList.add('show');
+  }
 }
 function importJSON(event){
   const file=event.target.files[0];
@@ -407,6 +443,7 @@ function importJSON(event){
       issues=data.issues;
       custom=data.customProjects||[];
       save();render();
+      localStorage.setItem(BK_KEY,new Date().toISOString());
       event.target.value='';
       showToast(`Restored ${itemCount} item${itemCount!==1?'s':''} successfully.`);
     }catch(err){
@@ -445,7 +482,7 @@ function exportLog(){
 }
 document.getElementById('dt').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeProjModal();}});
-load();render();
+load();render();checkBackupReminder();
 </script>
 </body>
 </html>
