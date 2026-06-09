@@ -17,7 +17,9 @@
   --sr-bg:#FFF0E6;--sr-text:#7A3800;--sr-dot:#E97225;
   --sp-bg:#EEF4FF;--sp-text:#2A4A8C;--sp-dot:#4A7AE0;
   --sd-bg:#F0F0F0;--sd-text:#888;--sd-dot:#AAAAAA;
-  --co:#1D9E75;--cx:#2176C7;--cd:var(--rdc-red);--cp:#8B3FA8;
+  --sm-bg:#E6F7F7;--sm-text:#1A6060;--sm-dot:#2AADAD;
+  --sc-bg:#EDFAF0;--sc-text:#1A5C30;--sc-dot:#2EAD5A;
+  --co:#1D9E75;--cx:#2176C7;--cd:var(--rdc-red);--cp:#8B3FA8;--ce:#E07B20;--cpr:#0E8A8A;--cl:#4A5568;
   --fd:'Source Serif 4',Georgia,serif;--fs:'Source Sans 3',system-ui,sans-serif;
 }
 @media(prefers-color-scheme:dark){
@@ -28,6 +30,7 @@
     --sa-bg:#2A0708;--sa-text:#F47578;--sb-bg:#110E2A;--sb-text:#A899F0;
     --sr-bg:#2A1500;--sr-text:#FFAA6B;--sp-bg:#0E1A35;--sp-text:#7AA4F5;
     --sd-bg:#222;--sd-text:#666;--sd-dot:#555;
+    --sm-bg:#0A2525;--sm-text:#5ADADA;--sc-bg:#0A2515;--sc-text:#5ADA8A;
   }
 }
 body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px;max-width:900px;margin:0 auto;}
@@ -73,6 +76,8 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
 .s-reminder{background:var(--sr-bg);color:var(--sr-text);}
 .s-pending{background:var(--sp-bg);color:var(--sp-text);}
 .s-done{background:var(--sd-bg);color:var(--sd-text);}
+.s-missing{background:var(--sm-bg);color:var(--sm-text);}
+.s-convo{background:var(--sc-bg);color:var(--sc-text);}
 .row.is-done{opacity:.55;}
 .row.is-done .ititle{text-decoration:line-through;color:var(--text-muted);}
 .row.is-done .stripe{opacity:.4;}
@@ -161,11 +166,20 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
     <button class="fb" onclick="setSF('s-blocked',this)"><span class="dot" style="background:var(--sb-dot)"></span>Blocked</button>
     <button class="fb" onclick="setSF('s-reminder',this)"><span class="dot" style="background:var(--sr-dot)"></span>Reminder</button>
     <button class="fb" onclick="setSF('s-pending',this)"><span class="dot" style="background:var(--sp-dot)"></span>Pending decision</button>
+    <button class="fb" onclick="setSF('s-missing',this)"><span class="dot" style="background:var(--sm-dot)"></span>Missing info</button>
+    <button class="fb" onclick="setSF('s-convo',this)"><span class="dot" style="background:var(--sc-dot)"></span>Set up convo</button>
     <button class="fb" onclick="setSF('s-done',this)"><span class="dot" style="background:var(--sd-dot)"></span>Done</button>
-    <button class="fb" onclick="setSF('c-own',this)">My tasks</button>
-    <button class="fb" onclick="setSF('c-xfn',this)">X-fn</button>
-    <button class="fb" onclick="setSF('c-design',this)">Design/product</button>
-    <button class="fb" onclick="setSF('c-people',this)">People</button>
+  </div>
+  <div class="flabel" style="margin-top:10px">Type</div>
+  <div class="frow" id="tf">
+    <button class="fb on" onclick="setTF('all',this)">All types</button>
+    <button class="fb" onclick="setTF('own',this)"><span class="dot" style="background:var(--co)"></span>My tasks</button>
+    <button class="fb" onclick="setTF('xfn',this)"><span class="dot" style="background:var(--cx)"></span>X-fn</button>
+    <button class="fb" onclick="setTF('design',this)"><span class="dot" style="background:var(--cd)"></span>Design</button>
+    <button class="fb" onclick="setTF('product',this)"><span class="dot" style="background:var(--cpr)"></span>Product</button>
+    <button class="fb" onclick="setTF('people',this)"><span class="dot" style="background:var(--cp)"></span>People</button>
+    <button class="fb" onclick="setTF('eng',this)"><span class="dot" style="background:var(--ce)"></span>Eng</button>
+    <button class="fb" onclick="setTF('leadership',this)"><span class="dot" style="background:var(--cl)"></span>Leadership</button>
   </div>
   <div class="flabel" style="margin-top:10px">Project</div>
   <div class="frow" id="pf"></div>
@@ -187,15 +201,18 @@ h1 span{color:var(--rdc-red);font-style:normal;font-weight:600;font-family:var(-
     <div class="field"><label>What is it?</label><input type="text" id="ft" placeholder="One-line summary..."></div>
     <div class="field"><label>Project</label><select id="fp"></select></div>
     <div class="field">
-      <label>Category</label>
+      <label>Type</label>
       <div class="cats">
         <label class="crad on" id="cr-own"><input type="radio" name="cat" value="own" checked><span class="dot" style="background:var(--co)"></span>My tasks &amp; open loops</label>
         <label class="crad" id="cr-xfn"><input type="radio" name="cat" value="xfn"><span class="dot" style="background:var(--cx)"></span>X-fn dependencies</label>
-        <label class="crad" id="cr-design"><input type="radio" name="cat" value="design"><span class="dot" style="background:var(--cd)"></span>Design / product decisions</label>
+        <label class="crad" id="cr-design"><input type="radio" name="cat" value="design"><span class="dot" style="background:var(--cd)"></span>Design</label>
+        <label class="crad" id="cr-product"><input type="radio" name="cat" value="product"><span class="dot" style="background:var(--cpr)"></span>Product</label>
         <label class="crad" id="cr-people"><input type="radio" name="cat" value="people"><span class="dot" style="background:var(--cp)"></span>Team / people things</label>
+        <label class="crad" id="cr-eng"><input type="radio" name="cat" value="eng"><span class="dot" style="background:var(--ce)"></span>Eng</label>
+        <label class="crad" id="cr-leadership"><input type="radio" name="cat" value="leadership"><span class="dot" style="background:var(--cl)"></span>Leadership</label>
       </div>
     </div>
-    <div class="field"><label>Status</label><select id="fs2"><option value="watch">Watching</option><option value="action">Needs action</option><option value="blocked">Blocked on someone</option><option value="reminder">Reminder</option><option value="pending">Pending decision</option><option value="done">Done / Resolved</option></select></div>
+    <div class="field"><label>Status</label><select id="fs2"><option value="watch">Watching</option><option value="action">Needs action</option><option value="blocked">Blocked</option><option value="reminder">Reminder</option><option value="pending">Pending decision</option><option value="missing">Missing info</option><option value="convo">Set up convo</option><option value="done">Done / Resolved</option></select></div>
     <div class="field"><label>Notes (optional)</label><textarea id="fn" rows="3" placeholder="Context, background, who's involved..."></textarea></div>
     <div class="field"><label>Check-in date (optional)</label><input type="date" id="fc"></div>
     <div class="mfoot">
@@ -225,17 +242,22 @@ const CM={
   own:{label:'My tasks',color:'var(--co)',bg:'#E1F5EE',tc:'#085041'},
   xfn:{label:'X-fn',color:'var(--cx)',bg:'#E6F1FB',tc:'#0C3E78'},
   design:{label:'Design',color:'var(--cd)',bg:'#FCEAEA',tc:'#8C1A1E'},
+  product:{label:'Product',color:'var(--cpr)',bg:'#E6F6F6',tc:'#0A5050'},
   people:{label:'People',color:'var(--cp)',bg:'#F5E8FF',tc:'#5B1A8A'},
+  eng:{label:'Eng',color:'var(--ce)',bg:'#FEF3E6',tc:'#7A3E08'},
+  leadership:{label:'Leadership',color:'var(--cl)',bg:'#ECEEF2',tc:'#2D3748'},
 };
 const SM={
   watch:{label:'Watching',cls:'s-watch',dot:'var(--sw-dot)'},
   action:{label:'Needs action',cls:'s-action',dot:'var(--sa-dot)'},
-  blocked:{label:'Blocked on someone',cls:'s-blocked',dot:'var(--sb-dot)'},
+  blocked:{label:'Blocked',cls:'s-blocked',dot:'var(--sb-dot)'},
   reminder:{label:'Reminder',cls:'s-reminder',dot:'var(--sr-dot)'},
   pending:{label:'Pending decision',cls:'s-pending',dot:'var(--sp-dot)'},
+  missing:{label:'Missing info',cls:'s-missing',dot:'var(--sm-dot)'},
+  convo:{label:'Set up convo',cls:'s-convo',dot:'var(--sc-dot)'},
   done:{label:'Done / Resolved',cls:'s-done',dot:'var(--sd-dot)'},
 };
-let issues=[],custom=[],sf='all',pf='all',view='status';
+let issues=[],custom=[],sf='all',tf='all',pf='all',view='status';
 function allP(){return[...DEFS,...custom];}
 function load(){
   try{issues=JSON.parse(localStorage.getItem(SK))||[];}catch(e){issues=[];}
@@ -251,6 +273,11 @@ function setSF(f,btn){
   document.querySelectorAll('#sf .fb').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');render();
 }
+function setTF(f,btn){
+  tf=f;
+  document.querySelectorAll('#tf .fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');render();
+}
 function setPF(f,btn){
   pf=f;
   document.querySelectorAll('#pf .fb').forEach(b=>b.classList.remove('on'));
@@ -263,9 +290,10 @@ function setView(v){
   render();
 }
 function matches(i){
-  const sok=sf==='all'?true:sf.startsWith('s-')?i.status===sf.slice(2):i.category===sf.slice(2);
+  const sok=sf==='all'?true:i.status===sf.slice(2);
+  const tok=tf==='all'?true:i.category===tf;
   const pok=pf==='all'?true:(i.project||'No project')===pf;
-  return sok&&pok;
+  return sok&&tok&&pok;
 }
 function renderPF(){
   const c=document.getElementById('pf');
@@ -277,7 +305,7 @@ function renderPF(){
 function render(){
   renderPF();
   const vis=issues.filter(matches);
-  const co={watch:0,action:0,blocked:0,reminder:0,pending:0,done:0};
+  const co={watch:0,action:0,blocked:0,reminder:0,pending:0,missing:0,convo:0,done:0};
   issues.forEach(i=>{ if(co[i.status]!==undefined) co[i.status]++; });
   document.getElementById('sumbar').innerHTML=
     `<span class="si"><strong>${issues.length}</strong> total</span>`+
@@ -290,10 +318,10 @@ function render(){
   if(view==='status')renderByStatus(vis,list);
   else renderByProject(vis,list);
 }
-function srt(arr){return[...arr].sort((a,b)=>({action:0,blocked:1,reminder:2,pending:3,watch:4,done:5}[a.status]-{action:0,blocked:1,reminder:2,pending:3,watch:4,done:5}[b.status]));}
+function srt(arr){return[...arr].sort((a,b)=>({action:0,blocked:1,missing:2,convo:3,reminder:4,pending:5,watch:6,done:7}[a.status]-{action:0,blocked:1,missing:2,convo:3,reminder:4,pending:5,watch:6,done:7}[b.status]));}
 function renderByStatus(vis,list){
   let html='';
-  [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked on someone'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
+  [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'missing',label:'Missing info'},{key:'convo',label:'Set up convo'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
     const g=srt(vis).filter(i=>i.status===sec.key);
     if(!g.length)return;
     html+=`<div class="sdiv"><span class="dot" style="background:${SM[sec.key].dot}"></span>${sec.label}</div>`;
@@ -348,7 +376,7 @@ function tog(id){
   if(!was){det.classList.add('show');row.classList.add('open');}
 }
 function cycleS(id){
-  const o=['watch','action','blocked','reminder','pending','done'],i=issues.find(x=>x.id===id);
+  const o=['watch','action','blocked','missing','convo','reminder','pending','done'],i=issues.find(x=>x.id===id);
   if(!i)return;i.status=o[(o.indexOf(i.status)+1)%o.length];save();render();
 }
 function delI(id){
@@ -482,7 +510,7 @@ function exportLog(){
     const g=issues.filter(i=>(i.project||'No project')===proj);
     if(!g.length)return;
     lines.push('=== '+proj.toUpperCase()+' ===');
-    [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
+    [{key:'action',label:'Needs action'},{key:'blocked',label:'Blocked'},{key:'missing',label:'Missing info'},{key:'convo',label:'Set up convo'},{key:'reminder',label:'Reminder'},{key:'pending',label:'Pending decision'},{key:'watch',label:'Watching'},{key:'done',label:'Done / Resolved'}].forEach(sec=>{
       const sg=g.filter(i=>i.status===sec.key);
       if(!sg.length)return;
       lines.push('  '+sec.label+':');
